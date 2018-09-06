@@ -1,8 +1,7 @@
-#include "sorter.h"
-
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include "sorter.h"
 
 static int error = 0;
 static record* head = NULL;
@@ -18,7 +17,7 @@ int main(int argc, char *argv[]) {
 
 	int typearr[] = { STRING, STRING, INT, INT, INT, INT, STRING, INT, INT,
 			STRING, STRING, STRING, INT, INT, STRING, INT, STRING, STRING, INT,
-			STRING, STRING, STRING, INT, INT, INT, DOUBLE, DOUBLE, INT }
+			STRING, STRING, STRING, INT, INT, INT, DOUBLE, DOUBLE, INT };
 	/*
 	 * To Do: Need to add error checking in tokenizing loop for readline (if(error)) and mallocs
 	 */

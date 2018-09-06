@@ -12,4 +12,8 @@ void insert(record* newrow);
 
 char* readline(FILE* fd, char* line, int size);
 
+void free_list();
+
+void insert(record* new_row);
+
 #endif
