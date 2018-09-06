@@ -22,7 +22,7 @@ int main(int argc, char *argv[]) {
 	 * To Do: Need to add error checking in tokenizing loop for readline (if(error)) and mallocs
 	 */
 
-	fd = fopen("csv.txt", "r");
+	fd = fopen("movie.csv", "r");
 	if (fd == NULL) {
 		printf("Couldn't open file\n");
 		return 1;
@@ -63,7 +63,7 @@ int main(int argc, char *argv[]) {
 
 				if (strsize == 0) { //NULL TOKEN
 					new_row->tokens[i] = malloc(sizeof(char) * 2); //to simplify freeing later
-					new_row->tokens[i] = "!\0";
+					strcpy(new_row->tokens[i], "!\0");
 					new_row->tokenmeta[i] = NULL_TOK;
 				} else {
 					new_row->tokens[i] = malloc(sizeof(char) * strsize + 1);
@@ -79,6 +79,7 @@ int main(int argc, char *argv[]) {
 			//Line has quotation delimited token containing comma
 			quote = strsep(&line, "\"");
 			tokensleft = token;
+			line++; //CHECK
 			while ((token = strsep(&tokensleft, ",")) != NULL) {
 				tholder = token;
 				while (*tholder) //get size of token
@@ -87,7 +88,7 @@ int main(int argc, char *argv[]) {
 
 				if (strsize == 0) { //NULL TOKEN
 					new_row->tokens[i] = malloc(sizeof(char) * 2); //to simplify freeing later
-					new_row->tokens[i] = "!\0";
+					strcpy(new_row->tokens[i], "!\0");
 					new_row->tokenmeta[i] = NULL_TOK;
 				} else {
 					new_row->tokens[i] = malloc(sizeof(char) * strsize + 1);
@@ -105,7 +106,7 @@ int main(int argc, char *argv[]) {
 			strsize = tholder - quote;
 			new_row->tokens[i] = malloc(sizeof(char) * strsize + 1);
 			copy = new_row->tokens[i];
-			tholder = token;
+			tholder = quote;
 			while ((*copy++ = *tholder++));
 			//copy = '\0';
 			new_row->tokenmeta[i] = QUOTE;
@@ -118,10 +119,10 @@ int main(int argc, char *argv[]) {
 
 				if (strsize == 0) { //NULL TOKEN
 					new_row->tokens[i] = malloc(sizeof(char) * 2); //to simplify freeing later
-					new_row->tokens[i] = "!\0";
+					strcpy(new_row->tokens[i], "!\0");
 					new_row->tokenmeta[i] = NULL_TOK;
 				} else {
-					new_row->tokens[i] = malloc(sizeof(char) * strsize + 1);
+					new_row->tokens[i] = malloc(sizeof(char) * (strsize + 1));
 					copy = new_row->tokens[i];
 					tholder = token;
 					while ((*copy++ = *tholder++));
