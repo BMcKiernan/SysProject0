@@ -136,9 +136,6 @@ int main(int argc, char *argv[]) {
 		//reset line to the begnning of the allocated memory
 		line = pholder;
 
-        //zero out the memory in preparation for a new string
-		while(*pholder)
-		    *pholder++ = '\0';
 
 		//Using length of last token -- Memory will already be allocated AT LEAST that much
 		line = readline(fd, line, len);
@@ -175,9 +172,7 @@ void free_list() {
 		lead = lead->next;
 		for (i = 0; i < 28; i++)
 			free(willy->tokens[i]);
-		if (willy != 0) {
-			free(willy);
-		}
+		free(willy);
 	}
 	head = NULL;
 }
