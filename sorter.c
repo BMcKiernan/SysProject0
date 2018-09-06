@@ -136,7 +136,6 @@ int main(int argc, char *argv[]) {
 		//reset line to the begnning of the allocated memory
 		line = pholder;
 
-
 		//Using length of last token -- Memory will already be allocated AT LEAST that much
 		line = readline(fd, line, len);
 		//reset pholder to get  new line length
