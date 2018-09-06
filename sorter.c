@@ -1,15 +1,14 @@
-#include <stdio.h>
-#include <string.h>
-#include <stdlib.h>
 #include "sorter.h"
+
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
 
 static int error = 0;
 static record* head = NULL;
 
 enum {
-	NULL_TOK = -1,
-	COMMA = 0,
-	QUOTE = 1,
+	NULL_TOK = -1, COMMA = 0, QUOTE = 1, INT = 3, DOUBLE = 4, STRING = 5,
 };
 
 int main(int argc, char *argv[]) {
@@ -17,6 +16,9 @@ int main(int argc, char *argv[]) {
 	char *line, *token, *pholder, *quote, *tokensleft, *tholder, *copy;
 	FILE *fd;
 
+	int typearr[] = { STRING, STRING, INT, INT, INT, INT, STRING, INT, INT,
+			STRING, STRING, STRING, INT, INT, STRING, INT, STRING, STRING, INT,
+			STRING, STRING, STRING, INT, INT, INT, DOUBLE, DOUBLE, INT }
 	/*
 	 * To Do: Need to add error checking in tokenizing loop for readline (if(error)) and mallocs
 	 */
@@ -40,19 +42,19 @@ int main(int argc, char *argv[]) {
 	}
 	pholder = line;
 	//get size of string from readline
-    while(*pholder)
-        pholder++;
+	while (*pholder)
+		pholder++;
 	len = pholder - line;
-    //reset pholder to line for later
+	//reset pholder to line for later
 	pholder = line;
 	//Loop while the length of the line read is greater than 1 (FILE IS NOT EOF)
-	while (len > 1){
+	while (len > 1) {
 		record* new_row = malloc(sizeof(record));
 		i = 0;
 		token = strsep(&line, "\"");
 		//Line is NULL if there is no quoted token containing an inner comma
 		if (line == NULL) {
-			line = pholder;  //reset line back to itself after strsep made it null
+			line = token; //reset line back to itself after strsep made it null
 
 			while ((token = strsep(&line, ",")) != NULL) {
 				tholder = token;
@@ -60,19 +62,19 @@ int main(int argc, char *argv[]) {
 					tholder++;
 				strsize = tholder - token;
 
-				if(strsize == 0){ //NULL TOKEN
-                     new_row->tokens[i] = malloc(sizeof(char)*1); //to simplify freeing later
-                     new_row->tokens[i] = "\0";
-                     new_row->tokenmeta[i] = NULL_TOK;
+				if (strsize == 0) { //NULL TOKEN
+					new_row->tokens[i] = malloc(sizeof(char) * 2); //to simplify freeing later
+					new_row->tokens[i] = "!\0";
+					new_row->tokenmeta[i] = NULL_TOK;
 				} else {
-				    new_row->tokens[i] = malloc(sizeof(char)*strsize+1);
-				    copy = new_row->tokens[i];
-				    tholder = token;
-				    while((*copy++ = *tholder++));
-				    copy = '\0';
-				    new_row->tokenmeta[i] = COMMA;
+					new_row->tokens[i] = malloc(sizeof(char) * strsize + 1);
+					copy = new_row->tokens[i];
+					tholder = token;
+					while ((*copy++ = *tholder++));
+					//*copy = '\0';
+					new_row->tokenmeta[i] = COMMA;
 				}
-                i++;
+				i++;
 			}
 		} else {
 			//Line has quotation delimited token containing comma
@@ -84,29 +86,29 @@ int main(int argc, char *argv[]) {
 					tholder++;
 				strsize = tholder - token;
 
-				if(strsize == 0){ //NULL TOKEN
-                     new_row->tokens[i] = malloc(sizeof(char)*1); //to simplify freeing later
-                     new_row->tokens[i] = "\0";
-                     new_row->tokenmeta[i] = NULL_TOK;
+				if (strsize == 0) { //NULL TOKEN
+					new_row->tokens[i] = malloc(sizeof(char) * 2); //to simplify freeing later
+					new_row->tokens[i] = "!\0";
+					new_row->tokenmeta[i] = NULL_TOK;
 				} else {
-				    new_row->tokens[i] = malloc(sizeof(char)*strsize+1);
-				    copy = new_row->tokens[i];
-				    tholder = token;
-				    while((*copy++ = *tholder++));
-				    copy = '\0';
-				    new_row->tokenmeta[i] = COMMA;
+					new_row->tokens[i] = malloc(sizeof(char) * strsize + 1);
+					copy = new_row->tokens[i];
+					tholder = token;
+					while ((*copy++ = *tholder++));
+					//copy = '\0';
+					new_row->tokenmeta[i] = COMMA;
 				}
 				i++;
 			}
 			tholder = quote;
-			while(*tholder)
+			while (*tholder)
 				tholder++;
-			strsize = tholder - token;
-			new_row->tokens[i] = malloc(sizeof(char)*strsize+1);
+			strsize = tholder - quote;
+			new_row->tokens[i] = malloc(sizeof(char) * strsize + 1);
 			copy = new_row->tokens[i];
 			tholder = token;
-			while((*copy++ = *tholder++));
-			copy = '\0';
+			while ((*copy++ = *tholder++));
+			//copy = '\0';
 			new_row->tokenmeta[i] = QUOTE;
 			i++;
 			while ((token = strsep(&line, ",")) != NULL) {
@@ -115,41 +117,41 @@ int main(int argc, char *argv[]) {
 					tholder++;
 				strsize = tholder - token;
 
-				if(strsize == 0){ //NULL TOKEN
-                     new_row->tokens[i] = malloc(sizeof(char)*1); //to simplify freeing later
-                     new_row->tokens[i] = "\0";
-                     new_row->tokenmeta[i] = NULL_TOK;
+				if (strsize == 0) { //NULL TOKEN
+					new_row->tokens[i] = malloc(sizeof(char) * 2); //to simplify freeing later
+					new_row->tokens[i] = "!\0";
+					new_row->tokenmeta[i] = NULL_TOK;
 				} else {
-				    new_row->tokens[i] = malloc(sizeof(char)*strsize+1);
-				    copy = new_row->tokens[i];
-				    tholder = token;
-				    while((*copy++ = *tholder++));
-				    copy = '\0';
-				    new_row->tokenmeta[i] = COMMA;
+					new_row->tokens[i] = malloc(sizeof(char) * strsize + 1);
+					copy = new_row->tokens[i];
+					tholder = token;
+					while ((*copy++ = *tholder++));
+					//copy = '\0';
+					new_row->tokenmeta[i] = COMMA;
 				}
 				i++;
 			}
 		}
 		insert(new_row);
-        //reset line to the begnning of the allocated memory
+		//reset line to the begnning of the allocated memory
 		line = pholder;
-        //zero out the memory in preparation for a new string
-		while(*pholder)
-		    * pholder++ = '\0';
+		//zero out the memory in preparation for a new string
+		while (*pholder)
+			*pholder++ = '\0';
 		//Using length of last token -- Memory will already be allocated AT LEAST that much
 		line = readline(fd, line, len);
 		//reset pholder to get  new line length
 		pholder = line;
-        //get size of the new string from readline for check in outer while loop
+		//get size of the new string from readline for check in outer while loop
 		while (*pholder)
 			pholder++;
 		len = pholder - line;
-	    //reset pholder to line for later
+		//reset pholder to line for later
 		pholder = line;
 	}
-
+    free_list();
 	free(line);
-	fclose( fd);
+	fclose(fd);
 	return 0;
 }
 
@@ -189,7 +191,7 @@ char* readline(FILE* input_file, char* p, int size) {
 			p2 = malloc((size) * sizeof(char));
 			if (p2 == NULL) {
 				printf("Allocation of memory failed. File: %s, Line: %d\n",
-						__FILE__, __LINE__);
+				__FILE__, __LINE__);
 				error = 1;
 				return p;
 			}
