@@ -135,7 +135,7 @@ int main(int argc, char *argv[]) {
 		line = pholder;
         //zero out the memory in preparation for a new string
 		while(*pholder)
-		    * pholder++ = '\0';
+		    *pholder++ = '\0';
 		//Using length of last token -- Memory will already be allocated AT LEAST that much
 		line = readline(fd, line, len);
 		//reset pholder to get  new line length
