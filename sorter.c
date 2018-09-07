@@ -7,7 +7,7 @@ static int error = 0;
 static record* head = NULL;
 
 enum {
-	NULL_TOK = -1, COMMA = 0, QUOTE = 1, INT = 3, DOUBLE = 4, STRING = 5,
+	NULL_TOK = -1, COMMA = 1, QUOTE = 2, INT = 3, DOUBLE = 4, STRING = 5,
 };
 
 int main(int argc, char *argv[]) {
@@ -41,11 +41,7 @@ int main(int argc, char *argv[]) {
 	}
 	pholder = line;
 	//get size of string from readline
-	while (*pholder)
-		pholder++;
-	len = pholder - line;
-	//reset pholder to line for later
-	pholder = line;
+	len = strlen(pholder) + 1;
 	//Loop while the length of the line read is greater than 1 (FILE IS NOT EOF)
 	while (len > 1) {
 		record* new_row = malloc(sizeof(record));
@@ -55,12 +51,9 @@ int main(int argc, char *argv[]) {
 		if (line == NULL) {
 			line = token; //reset line back to itself after strsep made it null
 
-			while ((token = strsep(&line, ",")) != NULL) {
-				tholder = token;
-				while (*tholder) //get size of token
-					tholder++;
-				strsize = tholder - token;
+			while ((token = strsep(&line, ",")) != NULL && (strcmp(token, "\0") != 0)) {
 
+				strsize = strlen(token) + 1;
 				if (strsize == 0) { //NULL TOKEN
 					new_row->tokens[i] = malloc(sizeof(char) * 2); //to simplify freeing later
 					strcpy(new_row->tokens[i], "!\0");
@@ -68,9 +61,7 @@ int main(int argc, char *argv[]) {
 				} else {
 					new_row->tokens[i] = malloc(sizeof(char) * strsize + 1);
 					copy = new_row->tokens[i];
-					tholder = token;
-					while ((*copy++ = *tholder++));
-					//*copy = '\0';
+					strcpy(new_row->tokens[i], token);
 					new_row->tokenmeta[i] = COMMA;
 				}
 				i++;
@@ -80,73 +71,53 @@ int main(int argc, char *argv[]) {
 			quote = strsep(&line, "\"");
 			tokensleft = token;
 			line++; //CHECK
-			while ((token = strsep(&tokensleft, ",")) != NULL) {
-				tholder = token;
-				while (*tholder) //get size of token
-					tholder++;
-				strsize = tholder - token;
-
+			while ((token = strsep(&tokensleft, ",")) != NULL && (strcmp(token, "\0") != 0)) {
+                //Potential Solution to problem may be that strsep returns token for "\0" or something like that
+				strsize = strlen(token);
 				if (strsize == 0) { //NULL TOKEN
 					new_row->tokens[i] = malloc(sizeof(char) * 2); //to simplify freeing later
 					strcpy(new_row->tokens[i], "!\0");
 					new_row->tokenmeta[i] = NULL_TOK;
 				} else {
 					new_row->tokens[i] = malloc(sizeof(char) * strsize + 1);
-					copy = new_row->tokens[i];
-					tholder = token;
-					while ((*copy++ = *tholder++));
-					//copy = '\0';
+					strcpy(new_row->tokens[i], token);
 					new_row->tokenmeta[i] = COMMA;
 				}
 				i++;
 			}
-			tholder = quote;
-			while (*tholder)
-				tholder++;
-			strsize = tholder - quote;
+
+			strsize = strlen(quote);
 			new_row->tokens[i] = malloc(sizeof(char) * strsize + 1);
-			copy = new_row->tokens[i];
-			tholder = quote;
-			while ((*copy++ = *tholder++));
-			//copy = '\0';
+			strcpy(new_row->tokens[i], quote);
 			new_row->tokenmeta[i] = QUOTE;
 			i++;
-			while ((token = strsep(&line, ",")) != NULL) {
-				tholder = token;
-				while (*tholder) //get size of token
-					tholder++;
-				strsize = tholder - token;
 
+			while ((token = strsep(&line, ",")) != NULL ) {
+
+				strsize = strlen(token);
 				if (strsize == 0) { //NULL TOKEN
 					new_row->tokens[i] = malloc(sizeof(char) * 2); //to simplify freeing later
 					strcpy(new_row->tokens[i], "!\0");
 					new_row->tokenmeta[i] = NULL_TOK;
 				} else {
-					new_row->tokens[i] = malloc(sizeof(char) * (strsize + 1));
-					copy = new_row->tokens[i];
-					tholder = token;
-					while ((*copy++ = *tholder++));
-					//copy = '\0';
+					new_row->tokens[i] = malloc(sizeof(char) * strsize + 1);
+					strcpy(new_row->tokens[i], token);
 					new_row->tokenmeta[i] = COMMA;
 				}
 				i++;
 			}
 		}
 		insert(new_row);
-		//reset line to the begnning of the allocated memory
+		//reset line to the beginning of the allocated memory
 		line = pholder;
-
 		//Using length of last token -- Memory will already be allocated AT LEAST that much
 		line = readline(fd, line, len);
-		//reset pholder to get  new line length
-		pholder = line;
 		//get size of the new string from readline for check in outer while loop
-		while (*pholder)
-			pholder++;
-		len = pholder - line;
+		len = strlen(line);
 		//reset pholder to line for later
 		pholder = line;
 	}
+	print_list();
     free_list();
 	free(line);
 	fclose(fd);
@@ -169,11 +140,33 @@ void free_list() {
 	while (lead != NULL) {
 		willy = lead;
 		lead = lead->next;
-		for (i = 0; i < 28; i++)
+		for (i = 0; i < 8; i++)
 			free(willy->tokens[i]);
 		free(willy);
 	}
 	head = NULL;
+}
+
+void print_list(){
+    if ((head == NULL)) {
+		printf("WARNING: free_list called with head==NULL");
+		return;
+	}
+	record* lead = head;
+	record* p;
+	int i = 0;
+	while(lead != NULL){
+		p = lead;
+		lead = lead->next;
+		for(i = 0;  i <8; i++){
+			if(p->tokenmeta[i] == QUOTE)
+				printf("\"%s\",",p->tokens[i]);
+			else if(i != 8)
+				printf("%s,",p->tokens[i]);
+			else
+				printf("%s\n");
+		}
+	}
 }
 
 char* readline(FILE* input_file, char* p, int size) {
