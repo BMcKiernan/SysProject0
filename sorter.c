@@ -41,12 +41,12 @@ int main(int argc, char *argv[]) {
 		free(line);
 	}
 
-
+/*
 	//DEBUGGING CODE
 	copy = malloc(sizeof(char)*strlen(line)+1);
 	strcpy(copy, line);
 	//DEBUGGING CODE
-
+*/
 
 	pholder = line;
 	//get size of string from readline
@@ -60,9 +60,10 @@ int main(int argc, char *argv[]) {
 		if (line == NULL) {
 			line = token; //reset line back to itself after strsep made it null
 
-			while ((token = strsep(&line, ",")) != NULL && (strcmp(token, "\0") != 0)) {
+			while (( token = strsep(&line, ",")) != NULL ) {
 
-				strsize = strlen(token) + 1;
+
+				strsize = strlen(token) ;
 				if (strsize == 0) { //NULL TOKEN
 					new_row->tokens[i] = malloc(sizeof(char) * 2); //to simplify freeing later
 					strcpy(new_row->tokens[i], "!\0");
@@ -79,7 +80,7 @@ int main(int argc, char *argv[]) {
 			quote = strsep(&line, "\"");
 			tokensleft = token;
 			line++; //CHECK
-			while ((token = strsep(&tokensleft, ",")) != NULL && (strcmp(token, "\0") != 0)) {
+			while ((token = strsep(&tokensleft, ",")) != NULL ) {
                 //Potential Solution to problem may be that strsep returns token for "\0" or something like that
 				strsize = strlen(token);
 				if (strsize == 0) { //NULL TOKEN
@@ -117,6 +118,7 @@ int main(int argc, char *argv[]) {
 		}
 		insert(new_row);
 
+/*
         //DEBUGGING CODE
 		printf("\n[Original Line:] %s\n",copy);
 		printf("[Row number: %d  Number of tokens: %d] ",h++,i);
@@ -125,6 +127,7 @@ int main(int argc, char *argv[]) {
 		}
 		printf("\n");
 		//DEBUGGING CODE
+*/
 
 
 		//reset line to the beginning of the allocated memory
@@ -132,10 +135,13 @@ int main(int argc, char *argv[]) {
 		//Using length of last token -- Memory will already be allocated AT LEAST that much
 		line = readline(fd, line, len);
 
+/*
 		//DEBUGGING CODE
+		free(copy);
 		copy = malloc(sizeof(char)*strlen(line)+1);
 		strcpy(copy, line);
 		//DEBUGGING CODE
+*/
 
 		//get size of the new string from readline for check in outer while loop
 		len = strlen(line);
@@ -143,6 +149,7 @@ int main(int argc, char *argv[]) {
 		pholder = line;
 	}
 	print_list();
+	//free(copy);
     free_list();
 	free(line);
 	fclose(fd);
@@ -186,7 +193,7 @@ void print_list(){
 		for(i = 0;  i < 28; i++){
 			if(p->tokenmeta[i] == QUOTE)
 				printf("\"%s\",",p->tokens[i]);
-			else if(p->tokenmeta[i] == COMMA && i < 27)
+			else if( i < 27)
 				printf("%s,",p->tokens[i]);
 			else
 				printf("%s",p->tokens[i]);
