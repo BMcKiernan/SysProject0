@@ -101,7 +101,8 @@ int main(int argc, char *argv[]) {
 			new_row->tokenmeta[i] = QUOTE;
 			i++;
 
-			while ((token = strsep(&line, ",")) != NULL ) {
+			//NEED TO DO ERROR CHECKING HERE
+			while ( i< 28 && (token = strsep(&line, ",")) != NULL ) {
 
 				strsize = strlen(token);
 				if (strsize == 0) { //NULL TOKEN
