@@ -11,9 +11,10 @@ enum {
 };
 
 int main(int argc, char *argv[]) {
-	int len, i, strsize, size = 512;
-	char *line, *token, *pholder, *quote, *tokensleft, *tholder, *copy;
+	int len, i,  h, strsize, size = 512;
+	char *line, *token, *pholder, *quote, *tokensleft, *copy;
 	FILE *fd;
+	h = 0;
 
 	int typearr[] = { STRING, STRING, INT, INT, INT, INT, STRING, INT, INT,
 			STRING, STRING, STRING, INT, INT, STRING, INT, STRING, STRING, INT,
@@ -22,7 +23,7 @@ int main(int argc, char *argv[]) {
 	 * To Do: Need to add error checking in tokenizing loop for readline (if(error)) and mallocs
 	 */
 
-	fd = fopen("movie.csv", "r");
+	fd = fopen("movie_metadata.csv", "r");
 	if (fd == NULL) {
 		printf("Couldn't open file\n");
 		return 1;
@@ -39,6 +40,14 @@ int main(int argc, char *argv[]) {
 		fclose(fd);
 		free(line);
 	}
+
+
+	//DEBUGGING CODE
+	copy = malloc(sizeof(char)*strlen(line)+1);
+	strcpy(copy, line);
+	//DEBUGGING CODE
+
+
 	pholder = line;
 	//get size of string from readline
 	len = strlen(pholder) + 1;
@@ -60,7 +69,6 @@ int main(int argc, char *argv[]) {
 					new_row->tokenmeta[i] = NULL_TOK;
 				} else {
 					new_row->tokens[i] = malloc(sizeof(char) * strsize + 1);
-					copy = new_row->tokens[i];
 					strcpy(new_row->tokens[i], token);
 					new_row->tokenmeta[i] = COMMA;
 				}
@@ -108,10 +116,27 @@ int main(int argc, char *argv[]) {
 			}
 		}
 		insert(new_row);
+
+        //DEBUGGING CODE
+		printf("\n[Original Line:] %s\n",copy);
+		printf("[Row number: %d  Number of tokens: %d] ",h++,i);
+		for(i = 0; i < 28; i++){
+			printf("-%s-", new_row->tokens[i]);
+		}
+		printf("\n");
+		//DEBUGGING CODE
+
+
 		//reset line to the beginning of the allocated memory
 		line = pholder;
 		//Using length of last token -- Memory will already be allocated AT LEAST that much
 		line = readline(fd, line, len);
+
+		//DEBUGGING CODE
+		copy = malloc(sizeof(char)*strlen(line)+1);
+		strcpy(copy, line);
+		//DEBUGGING CODE
+
 		//get size of the new string from readline for check in outer while loop
 		len = strlen(line);
 		//reset pholder to line for later
@@ -140,7 +165,7 @@ void free_list() {
 	while (lead != NULL) {
 		willy = lead;
 		lead = lead->next;
-		for (i = 0; i < 8; i++)
+		for (i = 0; i < 28; i++)
 			free(willy->tokens[i]);
 		free(willy);
 	}
@@ -158,14 +183,15 @@ void print_list(){
 	while(lead != NULL){
 		p = lead;
 		lead = lead->next;
-		for(i = 0;  i <8; i++){
+		for(i = 0;  i < 28; i++){
 			if(p->tokenmeta[i] == QUOTE)
 				printf("\"%s\",",p->tokens[i]);
-			else if(i != 8)
+			else if(p->tokenmeta[i] == COMMA && i < 27)
 				printf("%s,",p->tokens[i]);
 			else
-				printf("%s\n");
+				printf("%s",p->tokens[i]);
 		}
+		printf("\n");
 	}
 }
 
