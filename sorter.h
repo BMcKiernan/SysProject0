@@ -18,4 +18,5 @@ void print_list();
 
 void insert(record* new_row);
 
+
 #endif

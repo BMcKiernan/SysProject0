@@ -1,24 +1,42 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <unistd.h>
 #include "sorter.h"
+#include "mergesort.h"
+#include "getcolumns.h"
 
-static int error = 0;
+
 static record* head = NULL;
+static int comparetype, col, error = 0;
 
 enum {
 	NULL_TOK = -1, COMMA = 1, QUOTE = 2, INT = 3, DOUBLE = 4, STRING = 5,
 };
 
 int main(int argc, char *argv[]) {
-	int len, i,  h, strsize, size = 512;
-	char *line, *token, *pholder, *quote, *tokensleft, *copy;
+	int len, col, i,  opt, h, strsize, size = 512;
+	char *line, *token, *pholder, *quote, *tokensleft, *copy, *colheader;
 	FILE *fd;
 	h = 0;
+
+	while ((opt = getopt(argc, argv, "c:")) != -1) {
+		switch (opt) {
+		case 'c': colheader = optarg; 	break;
+		default:
+			fprintf(stderr, "Usage: %s [-c colname]\n", argv[0]);
+			return -1;
+		}
+	}
+	if (optind == 1) {
+		fprintf(stderr, "Usage: %s [-c colname]\n", argv[0]);
+		return -1;
+	}
 
 	int typearr[] = { STRING, STRING, INT, INT, INT, INT, STRING, INT, INT,
 			STRING, STRING, STRING, INT, INT, STRING, INT, STRING, STRING, INT,
 			STRING, STRING, STRING, INT, INT, INT, DOUBLE, DOUBLE, INT };
+
 	/*
 	 * To Do: Need to add error checking in tokenizing loop for readline (if(error)) and mallocs
 	 */
@@ -40,6 +58,31 @@ int main(int argc, char *argv[]) {
 		fclose(fd);
 		free(line);
 	}
+
+	record* headers = malloc(sizeof(record));
+	col = getcolumns(line, headers, optarg);
+	if(col == -1){
+		printf("%s is not a valid column name.\n", optarg);
+		free(line);
+		for (i = 0; i < 28; i++)
+			free(headers->tokens[i]);
+		free(headers);
+		fclose(fd);
+		return -1;
+	} else
+		comparetype = typearr[col];
+
+	len = strlen(line) + 1;
+    line = readline(fd, line, len);
+    if(error){
+    	free(line);
+    	for(i = 0; i < 28; i ++)
+    		free(headers->tokens[i]);
+    	free(headers);
+    	fclose(fd);
+    	printf("readline() failed\n");
+    	return -1;
+    }
 
 /*
 	//DEBUGGING CODE
@@ -101,7 +144,8 @@ int main(int argc, char *argv[]) {
 			new_row->tokenmeta[i] = QUOTE;
 			i++;
 
-			//NEED TO DO ERROR CHECKING HERE
+			//NEED TO DO ERROR CHECKING HERE  -- setting i < 28 fixed the problem.
+			//There must be garbage data at the end of line beyond the 28 tokens
 			while ( i< 28 && (token = strsep(&line, ",")) != NULL ) {
 
 				strsize = strlen(token);
@@ -229,4 +273,3 @@ char* readline(FILE* input_file, char* p, int size) {
 	p[n] = '\0';
 	return p;
 }
-
