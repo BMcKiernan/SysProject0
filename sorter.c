@@ -41,7 +41,7 @@ int main(int argc, char *argv[]) {
 	 * To Do: Need to add error checking in tokenizing loop for readline (if(error)) and mallocs
 	 */
 
-	fd = fopen("movie_metadata.csv", "r");
+	fd = fopen("movie.csv", "r");
 	if (fd == NULL) {
 		printf("Couldn't open file\n");
 		return 1;

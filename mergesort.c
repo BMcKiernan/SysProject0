@@ -36,7 +36,7 @@ int less(char* a, char* b) {
 			bi = 0;
 			sscanf(a, "%d", &ai);
 			sscanf(b, "%d", &bi);
-			if (a < b) {
+			if (ai < bi) {
 				return 1;
 			} else
 				return 0;
@@ -45,7 +45,7 @@ int less(char* a, char* b) {
 			bd = 0;
 			sscanf(a, "%lf", &ad);
 			sscanf(b, "%lf", &bd);
-			if (a < b) {
+			if (ad < bd) {
 				return 1;
 			} else
 				return 0;
