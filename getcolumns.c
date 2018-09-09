@@ -5,7 +5,7 @@
 
 #define COMMA 1
 
-int getcolumns(char* line, record* headers, char* optarg){
+int getcolumns(char* line, record* headers, char* colheader){
     int col, strsize, i = 0;
     char *header, *p;
     col = -1;
@@ -16,7 +16,7 @@ int getcolumns(char* line, record* headers, char* optarg){
         headers->tokens[i] = malloc(sizeof(char)*strsize +1);
         strcpy(headers->tokens[i], header);
         headers->tokenmeta[i] = COMMA;
-        if(strcmp(optarg, header) == 0)
+        if(strcmp(colheader, header) == 0)
             col = i;
         i++;
     }

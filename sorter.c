@@ -60,7 +60,7 @@ int main(int argc, char *argv[]) {
 	}
 
 	record* headers = malloc(sizeof(record));
-	col = getcolumns(line, headers, optarg);
+	col = getcolumns(line, headers, colheader);
 	if(col == -1){
 		printf("%s is not a valid column name.\n", optarg);
 		free(line);
@@ -83,6 +83,11 @@ int main(int argc, char *argv[]) {
     	printf("readline() failed\n");
     	return -1;
     }
+
+
+    //set static variables in mergesort.c
+    setcol(col);
+    set_comparetype(comparetype);
 
 /*
 	//DEBUGGING CODE
@@ -193,6 +198,8 @@ int main(int argc, char *argv[]) {
 		//reset pholder to line for later
 		pholder = line;
 	}
+	head = mergesort(head);
+	insert(headers);
 	print_list();
 	//free(copy);
     free_list();

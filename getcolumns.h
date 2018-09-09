@@ -2,6 +2,6 @@
 #define GETCOLUMNS_C
 #include "sorter.h"
 
-int getcolumns(char* line, record* headers, char* optarg);
+int getcolumns(char* line, record* headers, char* colheader);
 
 #endif
