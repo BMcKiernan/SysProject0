@@ -19,31 +19,34 @@ void setcol(int i){
 	col = i;
 }
 
-int less(char* a, char* b){
+int less(char* a, char* b) {
 	int ai, bi;
 	double ad, bd;
+	if (strcmp(a, "!\0") == 0) {
+		return 1;
+	} else {
 
-	if(comparetype == STRING){
-		if(strcmp(a, b) == -1){
-			return 1;
-		} else
-			return 0;
+		if (comparetype == STRING) {
+			if (strcmp(a, b) < 0) {
+				return 1;
+			} else
+				return 0;
+		} else if (comparetype == INT) {
+			sscanf(a, "%d", ai);
+			sscanf(b, "%d", bi);
+			if (a < b) {
+				return 1;
+			} else
+				return 0;
+		} else {
+			sscanf(a, "%lf", ad);
+			sscanf(b, "%lf", bd);
+			if (a < b) {
+				return 1;
+			} else
+				return 0;
+		}
 	}
-	else if(comparetype == INT){
-		sscanf(a, "%d", ai);
-		sscanf(b, "%d", bi);
-		if(a < b){
-			return 1;
-		} else
-			return 0;
-	}
-	else
-		sscanf(a, "%lf", ad);
-		sscanf(b, "%lf", bd);
-		if(a < b){
-			return 1;
-		} else
-			return 0;
 }
 
 record* merge(record* a, record* b){
