@@ -32,15 +32,19 @@ int less(char* a, char* b) {
 			} else
 				return 0;
 		} else if (comparetype == INT) {
-			sscanf(a, "%d", ai);
-			sscanf(b, "%d", bi);
+			ai = 0;
+			bi = 0;
+			sscanf(a, "%d", &ai);
+			sscanf(b, "%d", &bi);
 			if (a < b) {
 				return 1;
 			} else
 				return 0;
 		} else {
-			sscanf(a, "%lf", ad);
-			sscanf(b, "%lf", bd);
+			ad = 0;
+			bd = 0;
+			sscanf(a, "%lf", &ad);
+			sscanf(b, "%lf", &bd);
 			if (a < b) {
 				return 1;
 			} else

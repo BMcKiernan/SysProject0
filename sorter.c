@@ -62,7 +62,7 @@ int main(int argc, char *argv[]) {
 	record* headers = malloc(sizeof(record));
 	col = getcolumns(line, headers, colheader);
 	if(col == -1){
-		printf("%s is not a valid column name.\n", optarg);
+		printf("%s is not a valid column name.\n", colheader);
 		free(line);
 		for (i = 0; i < 28; i++)
 			free(headers->tokens[i]);
