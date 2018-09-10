@@ -1,6 +1,6 @@
 #ifndef GETCOLUMNS_C
 #define GETCOLUMNS_C
-#include "sorter.h"
+#include "ADTList.h"
 
 int getcolumns(char* line, record* headers, char* colheader);
 

@@ -2,7 +2,7 @@
 #include <stdio.h>
 #include <string.h>
 #include "mergesort.h"
-#include "sorter.h"
+#include "ADTList.h"
 
 
 static int col;

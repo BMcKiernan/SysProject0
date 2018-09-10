@@ -1,7 +1,8 @@
 #ifndef MERGESORT_H
 #define MERGESORT_H
-#include "sorter.h"
+#include "ADTList.h"
 
+void set_comparetype(int j);
 
 void setcol(int i);
 
