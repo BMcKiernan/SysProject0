@@ -7,15 +7,13 @@
 #include "readline.h"
 #include "ADTList.h"
 
-static int comparetype, col;
-
 enum {
 	NULL_TOK = -1, COMMA = 1, QUOTE = 2, INT = 3, DOUBLE = 4, STRING = 5,
 };
 
 int main(int argc, char *argv[]) {
-	int len, error, col, i,  opt, h, strsize, size = 512;
-	char *line, *token, *pholder, *quote, *tokensleft, *copy, *colheader;
+	int len, error, col, comparetype, i,  opt, strsize, size = 512;
+	char *line, *token, *pholder, *quote, *tokensleft, *colheader;
 	FILE *fd;
 
 	int typearr[] = { STRING, STRING, INT, INT, INT, INT, STRING, INT, INT,
@@ -81,7 +79,6 @@ int main(int argc, char *argv[]) {
     	return -1;
     }
 
-
     //set static variables in mergesort.c
     setcol(col);
     set_comparetype(comparetype);
@@ -97,7 +94,7 @@ int main(int argc, char *argv[]) {
 		//Line is NULL if there is no quoted token containing an inner comma
 		if (line == NULL) {
 			line = token; //reset line back to itself after strsep made it null
-			while (( token = strsep(&line, ",")) != NULL ) {
+			while (i < 28 && ( token = strsep(&line, ",\r")) != NULL ) {
 
 				strsize = strlen(token) ;
 				if (strsize == 0) { //NULL TOKEN
@@ -142,7 +139,7 @@ int main(int argc, char *argv[]) {
 			//this block iterates one extra time getting garbage data
 			//which must be present in movie_metadata.csv from when
 			//it was downloaded.
-			while ( i< 28 && (token = strsep(&line, ",")) != NULL ) {
+			while ( i< 28 && (token = strsep(&line, ",\r")) != NULL ) {
 
 				strsize = strlen(token);
 				if (strsize == 0) { //NULL TOKEN

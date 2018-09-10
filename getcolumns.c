@@ -10,7 +10,7 @@ int getcolumns(char* line, record* headers, char* colheader){
     char *header, *p;
     col = -1;
     p = line;
-    while((header = strsep(&line, ",")) != NULL){
+    while(i < 28 && (header = strsep(&line, ",\r")) != NULL){
         
         strsize = strlen(header);
         headers->tokens[i] = malloc(sizeof(char)*strsize +1);
