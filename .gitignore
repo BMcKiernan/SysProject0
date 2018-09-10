@@ -1,2 +1,3 @@
-/a.out
-/sorter.c
+*.out
+sorted.csv
+
