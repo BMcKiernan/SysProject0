@@ -1,6 +1,16 @@
 # SysProject0
 198:214 Systems Programming project from 2017 Fall Semester with Professor Francisco @Rutgers
 
+
+SysProject0 reads csv input from stdin into a dynamic linked list and sorts data based on command arguments "-c columnname" using mergesort for linked lists.
+
+There are 28 columns which are either ints, strings, or doubles.  
+
+---------------------------------------------------------------------------------------------------------------------------
+
+
+ASSIGNMENT DESCRIPTION
+
 Instructions
 CS214 Project 0: Basic Data Sorter
  
